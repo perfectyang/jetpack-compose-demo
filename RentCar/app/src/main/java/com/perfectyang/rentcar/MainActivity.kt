@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import dev.chrisbanes.haze.HazeState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import coil.compose.AsyncImage
 import com.perfectyang.rentcar.ui.theme.Blur
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
@@ -40,8 +42,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val url = "https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/03d7af2961d44835a05384fdafad6d17~tplv-k3u1fbpfcp-jj-mark:3024:0:0:0:q75.awebp#?w=1080&h=733&s=887950&e=png&b=c3c7ce"
             RentCarTheme {
-                ImageDemo()
+                BtnDemo()
+//                ImageDemo(url = url)
+
 //                Dot()
 //                MainPage()
             }

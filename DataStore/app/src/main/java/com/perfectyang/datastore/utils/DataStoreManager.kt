@@ -15,7 +15,7 @@ data class UserDetail(
 
 const val USER_DATASTORE = "user_data"
 
-val Context.preferenceDataStore : DataStore<Preferences> by preferencesDataStore(name = USER_DATASTORE)
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_data")
 
 class DataStoreManager(val context: Context) {
 
