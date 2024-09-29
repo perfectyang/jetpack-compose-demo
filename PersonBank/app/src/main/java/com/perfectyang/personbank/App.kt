@@ -9,7 +9,4 @@ import dagger.hilt.android.HiltAndroidApp
 
 
 @HiltAndroidApp
-class App: Application() {
-
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_data")
-}
+class App: Application()

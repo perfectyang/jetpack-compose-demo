@@ -12,4 +12,8 @@ class UserRepositoryImpl (
     override suspend fun getUser(username: String, password: String): UserEntity? {
         return dao.getUser(username, password)
     }
+
+    override fun getAllUser(): Flow<List<UserEntity>> {
+        return dao.getAllUser()
+    }
 }

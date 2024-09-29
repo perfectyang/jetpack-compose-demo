@@ -17,6 +17,10 @@ class PersonRepositoryImpl (
         return dao.searchPersonBank("%$bankName%", userId, category)
     }
 
+    override suspend fun getPersonBankDetail(id: Int): PersonBankEntity {
+        return dao.getPersonBankDetail(id)
+    }
+
     override suspend fun deletePersonBank(id: Int) {
         dao.deletePersonBank(id)
     }

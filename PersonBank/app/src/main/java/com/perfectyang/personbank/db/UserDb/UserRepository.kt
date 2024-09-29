@@ -7,4 +7,6 @@ interface UserRepository {
 
     suspend fun getUser(username: String, password: String): UserEntity?
 
+    fun getAllUser(): Flow<List<UserEntity>>
+
 }

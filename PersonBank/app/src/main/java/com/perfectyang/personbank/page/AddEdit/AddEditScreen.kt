@@ -1,5 +1,7 @@
 package com.perfectyang.personbank.page.AddEdit
 
+import android.widget.Toast
+import androidx.annotation.ReturnThis
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -36,8 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.perfectyang.personbank.page.Home.HomeViewModel
 import com.perfectyang.personbank.page.Login.LoginViewModel
-import com.perfectyang.personbank.page.Login._userId
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 data class BankType (
@@ -50,11 +56,23 @@ fun AddEditScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     addEditViewModel: AddEditViewModel = hiltViewModel(),
-    loginViewModel: LoginViewModel = hiltViewModel()
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    bankId: String? = null
 ) {
     val radioOpts = listOf(BankType("1", "信用卡"), BankType("2", "借记卡"))
     val state by addEditViewModel.state.collectAsState()
     val userData by loginViewModel.getUserData().collectAsState(null)
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect (key1 = bankId) {
+        if (bankId != null) {
+            coroutineScope.launch {
+                val personBank = homeViewModel.getPersonBankDetail(bankId.toInt())
+                addEditViewModel.updateState(personBank)
+            }
+        }
+    }
 
 
     Column(
@@ -106,7 +124,7 @@ fun AddEditScreen(
 
         TextInputComp(
             text = "银行名称",
-            value = state.bank_name.toString()
+            value = state.bank_name ?: ""
         ) {
             addEditViewModel.onEvent(OnEvent.UpdateBankName(it))
         }
@@ -116,7 +134,7 @@ fun AddEditScreen(
         ) {
             addEditViewModel.onEvent(OnEvent.UpdateBankNumber(it))
         }
-        if (state.category === "1") {
+        if (state.category.toString() == "1") {
             TextInputComp(
                 text = "有效期",
                 value = state.valid_time.toString()
@@ -131,19 +149,19 @@ fun AddEditScreen(
             }
             TextInputComp(
                 text = "账单日",
-                value = state.bill_date.toString()
+                value = state.bill_date ?: ""
             ) {
                 addEditViewModel.onEvent(OnEvent.UpdateBackBillDate(it))
             }
             TextInputComp(
                 text = "还款日",
-                value = state.pay_date.toString()
+                value = state.pay_date ?: ""
             ) {
                 addEditViewModel.onEvent(OnEvent.UpdateBackPayDate(it))
             }
             TextInputComp(
                 text = "总额度",
-                value = state.quota.toString()
+                value = state.quota ?: ""
             ) {
                 addEditViewModel.onEvent(OnEvent.UpdateQuota(it))
             }
@@ -173,9 +191,15 @@ fun AddEditScreen(
                     containerColor = Color(0xFF2FDBCB)
                 ),
                 onClick = {
+                    if (
+                        state.bank_name === null || state.bank_name?.trim() === ""
+                        ) {
+                        Toast.makeText(context, "银行名称不能为空", Toast.LENGTH_SHORT).show()
+                      return@Button
+                    }
                     userData?.let {
-                        it[_userId]?.let { userId ->
-                            addEditViewModel.upInsertPersonBank(state, userId = userId.toString())
+                        it.userId.let { userId ->
+                            addEditViewModel.upInsertPersonBank(state, userId = userId)
                             navController.popBackStack()
                         }
                     }

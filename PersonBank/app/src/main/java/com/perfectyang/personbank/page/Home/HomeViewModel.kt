@@ -2,10 +2,12 @@ package com.perfectyang.personbank.page.Home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.perfectyang.personbank.db.PersonBankDb.PersonBankEntity
 import com.perfectyang.personbank.db.PersonBankDb.PersonRepository
 import com.perfectyang.personbank.db.UserDb.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -16,13 +18,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+fun Int.formatWithCommas(): String = "%,d".format(this)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: PersonRepository,
 ): ViewModel() {
-
 
     private val _searchValue = MutableStateFlow("")
     // 卡类型
@@ -44,6 +46,11 @@ class HomeViewModel @Inject constructor(
     }.flatMapLatest { it ->
         it
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+
+
+
+
 
     private val _state = MutableStateFlow(HomeState())
 
@@ -76,6 +83,11 @@ class HomeViewModel @Inject constructor(
 
     fun selectTab(c: String) {
         _category.value = c
+    }
+
+
+    suspend fun getPersonBankDetail (id: Int): PersonBankEntity {
+        return repository.getPersonBankDetail(id)
     }
 
 

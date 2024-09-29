@@ -23,4 +23,8 @@ interface PersonBankDao {
     fun searchPersonBank(bankName: String, userId: Long?, category: String): Flow<List<PersonBankEntity>>
 
 
+    @Query("SELECT * FROM PersonBankEntity where id = :id")
+    suspend fun getPersonBankDetail(id: Int): PersonBankEntity
+
+
 }

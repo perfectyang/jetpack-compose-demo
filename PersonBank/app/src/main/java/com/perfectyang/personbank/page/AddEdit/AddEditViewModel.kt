@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.perfectyang.personbank.db.PersonBankDb.PersonBankEntity
 import com.perfectyang.personbank.db.PersonBankDb.PersonRepository
-import com.perfectyang.personbank.page.Login._userId
+import com.perfectyang.personbank.utils.DataStoreRepository.UserDataStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ sealed class OnEvent {
 
 @HiltViewModel
 class AddEditViewModel @Inject constructor(
-    private val repository: PersonRepository
+    private val repository: PersonRepository,
 ): ViewModel() {
 
     val state = MutableStateFlow(PersonBankEntity())
@@ -83,6 +83,22 @@ class AddEditViewModel @Inject constructor(
                     category = event.value
                 )
             }
+        }
+    }
+
+    fun updateState(personBank: PersonBankEntity) {
+        viewModelScope.launch{
+            state.value = state.value.copy(
+                category = personBank.category,
+                bank_name = personBank.bank_name,
+                bank_number = personBank.bank_number,
+                valid_time = personBank.valid_time,
+                pay_date = personBank.pay_date,
+                bill_date = personBank.bill_date,
+                quota = personBank.quota,
+                back_card_three = personBank.back_card_three,
+                id = personBank.id
+            )
         }
     }
 

@@ -46,8 +46,8 @@ fun LoginScreen(
 
     LaunchedEffect(key1 = userData) {
         userData.let {
-            username = it?.get(_username) ?: ""
-            password = it?.get(_password) ?: ""
+            username = it?.username ?: ""
+            password = it?.password ?: ""
         }
     }
     Column (
@@ -56,7 +56,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         userData?.let {
-            Text(text = "${it[_userId]}")
+            Text(text = "${it.userId}")
         }
 
         OutlinedTextField(value = username, onValueChange = {

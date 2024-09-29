@@ -7,13 +7,15 @@ import com.perfectyang.personbank.db.UserDb.UserRepository
 import com.perfectyang.personbank.db.UserDb.UserRepositoryImpl
 import com.perfectyang.personbank.db.PersonBankDb.PersonRepository
 import com.perfectyang.personbank.db.PersonBankDb.PersonRepositoryImpl
-import com.perfectyang.personbank.utils.UserHandler
-import com.perfectyang.personbank.utils.UserHandlerImpl
+import com.perfectyang.personbank.utils.DataStoreRepository.Datastore.historyDataStore
+import com.perfectyang.personbank.utils.DataStoreRepository.Datastore.userDataStore
+import com.perfectyang.personbank.utils.DataStoreRepository.HistoryDataStoreRepository
+import com.perfectyang.personbank.utils.DataStoreRepository.HistoryDataStoreRepositoryImpl
+import com.perfectyang.personbank.utils.DataStoreRepository.UserDataStoreRepository
+import com.perfectyang.personbank.utils.DataStoreRepository.UserDataStoreRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -47,6 +49,24 @@ object AppModule {
     fun provideUserRepository(db: PersonDataBase): UserRepository {
         return UserRepositoryImpl(db.userDao)
     }
+
+
+
+
+
+
+    @Provides
+    @Singleton
+    fun  provideHistoryDataStoreManager(app: Application): HistoryDataStoreRepository {
+        return HistoryDataStoreRepositoryImpl(app.historyDataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun  provideUserDataStoreManager(app: Application): UserDataStoreRepository {
+        return UserDataStoreRepositoryImpl(app.userDataStore)
+    }
+
 
 
 }
